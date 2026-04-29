@@ -69,9 +69,7 @@ const Quiz: React.FC = () => {
       setShowExplanation(false);
     } else {
       setIsFinished(true);
-      saveQuizResult(score + (selectedAnswer === QUESTIONS[currentIdx].correctAnswer ? 0 : 0), [
-        ...sessionAnswers
-      ]);
+      saveQuizResult(score, [...sessionAnswers]);
     }
   };
 
@@ -231,6 +229,7 @@ const Quiz: React.FC = () => {
               score={score}
               total={QUESTIONS.length}
               onRestart={handleRestart}
+              onShowStats={() => setShowStats(true)}
             />
           )}
         </AnimatePresence>

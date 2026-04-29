@@ -6,9 +6,10 @@ interface ResultSummaryProps {
   score: number;
   total: number;
   onRestart: () => void;
+  onShowStats?: () => void;
 }
 
-const ResultSummary: React.FC<ResultSummaryProps> = ({ score, total, onRestart }) => {
+const ResultSummary: React.FC<ResultSummaryProps> = ({ score, total, onRestart, onShowStats }) => {
   const percentage = Math.round((score / total) * 100);
 
   let rank = "E";
@@ -81,11 +82,20 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({ score, total, onRestart }
 
         <button
           onClick={onRestart}
-          className="w-full flex items-center justify-center gap-4 py-5 bg-system-blue text-system-dark rounded-2xl font-black italic text-lg tracking-[0.2em] shadow-[0_0_30px_#00e5ff66] hover:brightness-110 active:scale-95 transition-all"
+          className="w-full flex items-center justify-center gap-4 py-5 bg-system-blue text-system-dark rounded-2xl font-black italic text-lg tracking-[0.2em] shadow-[0_0_30px_#00e5ff66] hover:brightness-110 active:scale-95 transition-all mb-4"
         >
           <RotateCcw className="w-6 h-6" />
           重新挑戰系統
         </button>
+
+        {onShowStats && (
+          <button
+            onClick={onShowStats}
+            className="w-full flex items-center justify-center gap-4 py-4 bg-white/5 border border-white/10 text-white/50 rounded-2xl font-black italic text-sm tracking-[0.2em] hover:bg-white/10 hover:text-white transition-all"
+          >
+            查看歷史戰績 (HISTORY)
+          </button>
+        )}
       </div>
     </motion.div>
   );

@@ -43,6 +43,13 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ onBack }) => {
     return { id: q.id, ratio, total: attempts.length, corrects: corrects.length };
   });
 
+  const clearStats = () => {
+    if (window.confirm('確定要清除所有戰鬥數據紀錄嗎？此行動無法復原。')) {
+      localStorage.removeItem('quiz_results');
+      setResults([]);
+    }
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.95 }}
@@ -54,15 +61,26 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ onBack }) => {
           <div className="w-12 h-12 bg-system-blue/10 border border-system-blue/30 rounded-xl flex items-center justify-center glow-blue">
             <BarChart3 className="text-system-blue w-6 h-6" />
           </div>
-          <h2 className="text-2xl font-black text-white italic tracking-tighter uppercase">System Status Report</h2>
+          <div>
+            <h2 className="text-2xl font-black text-white italic tracking-tighter uppercase">數據分析報告</h2>
+            <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest">System Combat Intelligence</p>
+          </div>
         </div>
-        <button 
-          onClick={onBack}
-          className="flex items-center gap-2 text-white/40 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Return to Hub
-        </button>
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={clearStats}
+            className="text-red-500/50 hover:text-red-500 transition-colors text-[10px] font-bold uppercase tracking-widest border border-red-500/20 px-3 py-1.5 rounded-lg"
+          >
+            重置數據
+          </button>
+          <button 
+            onClick={onBack}
+            className="flex items-center gap-2 text-white/40 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            返回首頁
+          </button>
+        </div>
       </div>
 
       {/* Overview Cards */}
@@ -70,30 +88,30 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ onBack }) => {
         <div className="bg-black/40 border border-white/5 p-6 rounded-2xl">
           <div className="flex items-center justify-between mb-4">
             <Users className="text-system-blue/60 w-5 h-5" />
-            <span className="text-[10px] text-white/20 font-black uppercase tracking-widest">Total Active Hunters</span>
+            <span className="text-[10px] text-white/20 font-black uppercase tracking-widest">總鑑定次數</span>
           </div>
-          <div className="text-4xl font-black text-white italic tracking-tighter">{totalAttempts}</div>
-          <div className="text-[10px] text-system-blue font-bold uppercase mt-2">Completed Quests</div>
+          <div className="text-4xl font-black text-white italic tracking-tighter">{totalAttempts} <span className="text-sm font-normal not-italic text-white/40">次</span></div>
+          <div className="text-[10px] text-system-blue font-bold uppercase mt-2">Quest Completed</div>
         </div>
 
         <div className="bg-black/40 border border-white/5 p-6 rounded-2xl">
           <div className="flex items-center justify-between mb-4">
             <TrendingUp className="text-green-500/60 w-5 h-5" />
-            <span className="text-[10px] text-white/20 font-black uppercase tracking-widest">Avg Clearance Rate</span>
+            <span className="text-[10px] text-white/20 font-black uppercase tracking-widest">平均得分</span>
           </div>
-          <div className="text-4xl font-black text-white italic tracking-tighter">{avgScore}</div>
-          <div className="text-[10px] text-green-500 font-bold uppercase mt-2">Points Per Session</div>
+          <div className="text-4xl font-black text-white italic tracking-tighter">{avgScore} <span className="text-sm font-normal not-italic text-white/40">分</span></div>
+          <div className="text-[10px] text-green-500 font-bold uppercase mt-2">Clearance Rate</div>
         </div>
 
         <div className="bg-black/40 border border-white/5 p-6 rounded-2xl">
           <div className="flex items-center justify-between mb-4">
             <CheckCircle2 className="text-yellow-500/60 w-5 h-5" />
-            <span className="text-[10px] text-white/20 font-black uppercase tracking-widest">Success Probability</span>
+            <span className="text-[10px] text-white/20 font-black uppercase tracking-widest">總體答對率</span>
           </div>
           <div className="text-4xl font-black text-white italic tracking-tighter">
             {totalAttempts > 0 ? ((parseFloat(avgScore as string) / QUESTIONS.length) * 100).toFixed(0) : 0}%
           </div>
-          <div className="text-[10px] text-yellow-500 font-bold uppercase mt-2">Overall Accuracy</div>
+          <div className="text-[10px] text-yellow-500 font-bold uppercase mt-2">Analysis Result</div>
         </div>
       </div>
 
@@ -101,27 +119,29 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ onBack }) => {
       <div className="space-y-4">
         <h3 className="text-sm font-black text-white/40 uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
           <span className="w-8 h-px bg-white/10" />
-          Combat Data Analysis
+          全題目歷史分析數據 (題號及正確率)
           <span className="w-8 h-px bg-white/10" />
         </h3>
         
         <div className="grid gap-3">
           {questionStats.map((stat, idx) => (
             <div key={stat.id} className="bg-white/5 border border-white/5 p-4 rounded-xl flex items-center justify-between group hover:border-system-blue/30 transition-colors">
-              <div className="flex items-center gap-4">
-                <div className="text-xs font-mono text-white/20">#{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</div>
-                <div className="text-[11px] font-bold text-white/80 uppercase tracking-widest">Question Segment {stat.id}</div>
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-4">
+                  <div className="text-xs font-mono text-white/20">#{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</div>
+                  <div className="text-[11px] font-bold text-white/80 uppercase tracking-widest">區段題目 {stat.id}</div>
+                </div>
               </div>
               
               <div className="flex items-center gap-8">
                 <div className="flex items-center gap-4">
                   <div className="hidden sm:flex flex-col items-end">
-                    <span className="text-[9px] text-white/40 uppercase font-black tracking-widest">Accuracy</span>
+                    <span className="text-[9px] text-white/40 uppercase font-black tracking-widest">正確比例</span>
                     <span className={`text-xs font-mono font-bold ${stat.ratio > 70 ? 'text-green-400' : stat.ratio > 40 ? 'text-yellow-400' : 'text-red-400'}`}>
                       {stat.ratio.toFixed(1)}%
                     </span>
                   </div>
-                  <div className="w-24 h-1.5 bg-black/40 rounded-full overflow-hidden border border-white/5">
+                  <div className="w-32 h-1.5 bg-black/40 rounded-full overflow-hidden border border-white/5">
                     <div 
                       className={`h-full transition-all duration-1000 ${stat.ratio > 70 ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]' : stat.ratio > 40 ? 'bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.4)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]'}`}
                       style={{ width: `${stat.ratio}%` }}
@@ -129,13 +149,15 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ onBack }) => {
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-2 min-w-[60px]">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-green-500/60" />
-                  <span className="text-xs font-mono text-white/60">{stat.corrects}</span>
-                </div>
-                <div className="flex items-center gap-2 min-w-[60px]">
-                  <XCircle className="w-3.5 h-3.5 text-red-500/60" />
-                  <span className="text-xs font-mono text-white/60">{stat.total - stat.corrects}</span>
+                <div className="flex items-center gap-5 w-24 justify-end">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500/60" />
+                    <span className="text-xs font-mono text-white/60">{stat.corrects}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <XCircle className="w-3.5 h-3.5 text-red-500/60" />
+                    <span className="text-xs font-mono text-white/60">{stat.total - stat.corrects}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -145,7 +167,7 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ onBack }) => {
       
       {totalAttempts === 0 && (
         <div className="text-center py-20 border-2 border-dashed border-white/5 rounded-2xl mt-8">
-          <p className="text-white/20 text-xs font-black uppercase tracking-widest">No Combat Data Logged Yet</p>
+          <p className="text-white/20 text-xs font-black uppercase tracking-widest">目前尚無戰鬥紀錄存檔</p>
         </div>
       )}
     </motion.div>
