@@ -84,7 +84,7 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ onBack }) => {
       </div>
 
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-black/40 border border-white/5 p-6 rounded-2xl">
           <div className="flex items-center justify-between mb-4">
             <Users className="text-system-blue/60 w-5 h-5" />
@@ -114,6 +114,17 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ onBack }) => {
           <div className="text-[10px] text-yellow-500 font-bold uppercase mt-2">Analysis Result</div>
         </div>
       </div>
+
+      {/* Latest Activity */}
+      {results.length > 0 && (
+        <div className="glass-panel p-4 rounded-2xl border-white/5 flex items-center justify-between mb-12">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 rounded-full bg-system-blue animate-pulse" />
+            <span className="text-[10px] font-black uppercase text-white/40 tracking-wider">最後戰鬥存檔時間 (LATEST RECORD)</span>
+          </div>
+          <span className="text-xs font-mono text-system-blue">{results[results.length - 1].date}</span>
+        </div>
+      )}
 
       {/* Per Question Analysis */}
       <div className="space-y-4">
