@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Space Grotesk", "Noto Sans TC", ui-sans-serif, system-ui, sans-serif;
+  --color-system-blue: #00e5ff;
+  --color-system-dark: #0a0a14;
+}
+
+body {
+  @apply font-sans bg-[#020205] text-white antialiased overflow-x-hidden;
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(0, 229, 255, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
+    linear-gradient(to bottom, #05050a, #020205);
+}
+
+.glass-panel {
+  @apply bg-[#0a0a14]/90 backdrop-blur-3xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,1)];
+}
+
+.system-border {
+  @apply border-system-blue/30;
+}
+
+.glow-blue {
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+}
+
+.system-button {
+  @apply relative overflow-hidden transition-all duration-300;
+}
+
+.system-button::before {
+  content: '';
+  @apply absolute inset-0 bg-system-blue/10 opacity-0 transition-opacity duration-300;
+}
+
+.system-button:hover::before {
+  @apply opacity-100;
+}
+
