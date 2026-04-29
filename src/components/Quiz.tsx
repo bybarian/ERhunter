@@ -3,9 +3,12 @@ import { AnimatePresence, motion } from 'motion/react';
 import { QUESTIONS } from '../data/questions';
 import QuestionCard from './QuestionCard';
 import ResultSummary from './ResultSummary';
-import { Swords, ShieldAlert, GraduationCap, LayoutGrid } from 'lucide-react';
+import { Swords, ShieldAlert, Lock, ShieldCheck, GraduationCap, LayoutGrid } from 'lucide-react';
 
 const Quiz: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [isAuthError, setIsAuthError] = useState(false);
   const [started, setStarted] = useState(false);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [score, setScore] = useState(0);
@@ -15,6 +18,18 @@ const Quiz: React.FC = () => {
 
   const handleStart = () => {
     setStarted(true);
+  };
+
+  const handleAuthenticate = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (passwordInput === 'cgh888') {
+      setIsAuthenticated(true);
+      setIsAuthError(false);
+    } else {
+      setIsAuthError(true);
+      setTimeout(() => setIsAuthError(false), 500);
+      setPasswordInput('');
+    }
   };
 
   const handleSelectAnswer = (key: string) => {
@@ -80,7 +95,60 @@ const Quiz: React.FC = () => {
 
       <main className="w-full max-w-4xl flex-1 flex flex-col items-center">
         <AnimatePresence mode="wait">
-          {!started ? (
+          {!isAuthenticated ? (
+            <motion.div
+              key="auth"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className={`glass-panel p-10 rounded-3xl text-center max-w-md w-full border-system-blue/30 relative transition-all duration-300 ${isAuthError ? 'border-red-500/50 shadow-[0_0_40px_rgba(239,68,68,0.2)]' : ''}`}
+            >
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#020205] border border-system-blue/30 rounded-2xl flex items-center justify-center glow-blue">
+                <Lock className={`w-8 h-8 transition-colors ${isAuthError ? 'text-red-500' : 'text-system-blue'}`} />
+              </div>
+              
+              <div className="mt-8 mb-6">
+                <h2 className="text-xl font-black text-white italic tracking-tighter mb-2 uppercase">System Authentication</h2>
+                <p className="text-white/40 text-xs font-bold tracking-widest uppercase">Enter SG Access Code</p>
+              </div>
+
+              <form onSubmit={handleAuthenticate} className="space-y-4">
+                <div className="relative group">
+                  <input
+                    type="password"
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    placeholder="ACCESS CODE"
+                    className={`w-full bg-black/40 border-b-2 outline-none py-3 px-4 text-center font-mono text-xl tracking-[0.5em] text-system-blue placeholder:text-system-blue/20 transition-all ${isAuthError ? 'border-red-500 text-red-500' : 'border-system-blue/30 focus:border-system-blue group-hover:border-system-blue/60'}`}
+                    autoFocus
+                  />
+                  {isAuthError && (
+                    <motion.div 
+                      key="error-hint"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="text-red-500 text-[10px] font-black uppercase mt-2 tracking-widest"
+                    >
+                      Authentication Failed
+                    </motion.div>
+                  )}
+                </div>
+                
+                <button
+                  type="submit"
+                  className="w-full py-4 mt-4 bg-system-blue/10 border border-system-blue/30 text-system-blue rounded-xl font-black italic tracking-[0.2em] shadow-[0_0_40px_rgba(0,229,255,0.1)] hover:bg-system-blue hover:text-system-dark transition-all"
+                >
+                  VERIFY IDENTITY
+                </button>
+              </form>
+
+              <div className="mt-10 flex justify-center items-center gap-4 text-white/10 uppercase text-[9px] font-black tracking-widest">
+                <div className="h-px flex-1 bg-white/5" />
+                <span>Restricted Area</span>
+                <div className="h-px flex-1 bg-white/5" />
+              </div>
+            </motion.div>
+          ) : !started ? (
             <motion.div
               key="intro"
               initial={{ opacity: 0, scale: 0.9 }}
