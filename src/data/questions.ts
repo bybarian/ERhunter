@@ -29,7 +29,7 @@ export const QUESTIONS: Question[] = [
     ],
     correctAnswer: "B",
     explanation: "【系統解析】Type 2 壞死性筋膜炎通常由 Group A Streptococcus 引起，特色是疼痛與外觀不成比例（Pain out of proportion）。這是在 S 級門戶外最常見的致命偷襲。",
-    imageUrl: "/q1.png",
+    imageUrl: 'q1.png',
     rankReq: "Double Dungeon Survival",
   },
   {
@@ -106,6 +106,6 @@ export const QUESTIONS: Question[] = [
     ],
     correctAnswer: "D",
     explanation: "【系統解析】創傷弧菌（Vibrio vulnificus）是海洋中的 S 級獵殺者。其標誌性的『出血性血泡』是它留下的死亡印記。",
-    imageUrl: "/q10.png",
+    imageUrl: 'q10.png',
   },
 ];

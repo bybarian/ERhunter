@@ -51,28 +51,21 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
               className="relative rounded-2xl overflow-hidden border border-white/10 bg-black/60 group shadow-2xl min-h-[100px] flex items-center justify-center font-mono"
             >
               <img 
-                src={question.id === 1 ? "/q1.png" : question.id === 10 ? "/q10.png" : question.imageUrl} 
+                src={question.imageUrl} 
                 alt="System Analysis Data" 
                 className="w-full h-auto object-contain mx-auto max-h-[400px] hover:scale-105 transition-transform duration-500"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  // Try alternative paths
-                  if (target.src.endsWith('/q1.png')) {
-                    target.src = '/soft-tissue-us.png';
-                  } else if (target.src.endsWith('/q10.png')) {
-                    target.src = '/vibrio-bullae.png';
-                  } else {
-                    target.style.display = 'none';
-                    const parent = target.parentElement;
-                    if (parent) {
-                      parent.classList.add('p-12', 'bg-white/5');
-                      parent.innerHTML = `
-                        <div class="text-center">
-                          <div class="text-system-blue/40 mb-2 text-xs uppercase tracking-widest">[ 影像鑑定資料缺失 ]</div>
-                          <div class="text-white/20 text-[10px] italic">請將影像上傳至根目錄並命名為 q1.png 或 q10.png</div>
-                        </div>
-                      `;
-                    }
+                  target.style.display = 'none';
+                  const parent = target.parentElement;
+                  if (parent) {
+                    parent.classList.add('p-12', 'bg-white/5');
+                    parent.innerHTML = `
+                      <div class="text-center">
+                        <div class="text-system-blue/40 mb-2 text-xs uppercase tracking-widest">[ 影像鑑定資料缺失 ]</div>
+                        <div class="text-white/20 text-[10px] italic">請確保圖片已上傳至 public 資料夾並命名為 q1.png 與 q10.png</div>
+                      </div>
+                    `;
                   }
                 }}
               />
