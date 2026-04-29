@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { QUESTIONS } from '../data/questions';
 import QuestionCard from './QuestionCard';
 import ResultSummary from './ResultSummary';
-import { Swords, ShieldAlert, Lock, ShieldCheck, GraduationCap, LayoutGrid } from 'lucide-react';
+import StatsDashboard from './StatsDashboard';
+import { Swords, ShieldAlert, Lock, ShieldCheck, GraduationCap, LayoutGrid, BarChart2 } from 'lucide-react';
 
 const Quiz: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showStats, setShowStats] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [isAuthError, setIsAuthError] = useState(false);
   const [started, setStarted] = useState(false);
@@ -15,9 +17,11 @@ const Quiz: React.FC = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
+  const [sessionAnswers, setSessionAnswers] = useState<{ questionId: number; isCorrect: boolean }[]>([]);
 
   const handleStart = () => {
     setStarted(true);
+    setSessionAnswers([]);
   };
 
   const handleAuthenticate = (e?: React.FormEvent) => {
@@ -32,10 +36,28 @@ const Quiz: React.FC = () => {
     }
   };
 
+  const saveQuizResult = (finalScore: number, finalAnswers: { questionId: number; isCorrect: boolean }[]) => {
+    const newResult = {
+      date: new Date().toISOString(),
+      score: finalScore,
+      total: QUESTIONS.length,
+      answers: finalAnswers
+    };
+
+    const existing = localStorage.getItem('quiz_results');
+    const results = existing ? JSON.parse(existing) : [];
+    results.push(newResult);
+    localStorage.setItem('quiz_results', JSON.stringify(results));
+  };
+
   const handleSelectAnswer = (key: string) => {
+    const isCorrect = key === QUESTIONS[currentIdx].correctAnswer;
     setSelectedAnswer(key);
     setShowExplanation(true);
-    if (key === QUESTIONS[currentIdx].correctAnswer) {
+    
+    setSessionAnswers(prev => [...prev, { questionId: QUESTIONS[currentIdx].id, isCorrect }]);
+    
+    if (isCorrect) {
       setScore(s => s + 1);
     }
   };
@@ -47,6 +69,9 @@ const Quiz: React.FC = () => {
       setShowExplanation(false);
     } else {
       setIsFinished(true);
+      saveQuizResult(score + (selectedAnswer === QUESTIONS[currentIdx].correctAnswer ? 0 : 0), [
+        ...sessionAnswers
+      ]);
     }
   };
 
@@ -148,6 +173,8 @@ const Quiz: React.FC = () => {
                 <div className="h-px flex-1 bg-white/5" />
               </div>
             </motion.div>
+          ) : showStats ? (
+            <StatsDashboard onBack={() => setShowStats(false)} />
           ) : !started ? (
             <motion.div
               key="intro"
@@ -163,12 +190,24 @@ const Quiz: React.FC = () => {
               <p className="text-white/80 leading-relaxed text-lg mb-10">
                 您可以開始進行這場<span className="text-system-blue font-bold px-1 underline decoration-system-blue/40">「急診專科獵人」</span>等級鑑定測試了！
               </p>
-              <button
-                onClick={handleStart}
-                className="w-full py-4 bg-system-blue text-system-dark rounded-xl font-black italic tracking-[0.2em] shadow-[0_0_40px_rgba(0,229,255,0.4)] hover:brightness-110 active:scale-95 transition-all"
-              >
-                開始鑑定 (START)
-              </button>
+              
+              <div className="flex flex-col gap-4">
+                <button
+                  onClick={handleStart}
+                  className="w-full py-4 bg-system-blue text-system-dark rounded-xl font-black italic tracking-[0.2em] shadow-[0_0_40px_rgba(0,229,255,0.4)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-3"
+                >
+                  <ShieldCheck className="w-5 h-5" />
+                  開始鑑定 (START)
+                </button>
+                
+                <button
+                  onClick={() => setShowStats(true)}
+                  className="w-full py-4 bg-white/5 border border-white/10 text-white/60 rounded-xl font-black italic tracking-[0.2em] hover:bg-white/10 hover:text-white transition-all flex items-center justify-center gap-3"
+                >
+                  <BarChart2 className="w-5 h-5" />
+                  數據統計 (STATISTICS)
+                </button>
+              </div>
             </motion.div>
           ) : !isFinished ? (
             <motion.div
