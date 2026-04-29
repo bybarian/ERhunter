@@ -118,8 +118,8 @@ export const QUESTIONS: Question[] = [
       { key: "C", text: "符合 3 個 minor，診斷為 possible IE" },
       { key: "D", text: "未見 vegetation，可排除 IE" },
     ],
-    correctAnswer: "B",
-    explanation: "【系統解析】根據 Duke 鑑定準則：血液培養陽性 (Major 1) + 瓣膜置換史與發燒 (Minor 1+2)，符合 Possible IE 的鑑定標準。",
+    correctAnswer: "C",
+    explanation: "【系統解析】根據 Duke 鑑定準則：血液培養 SA 與 Streptococcus 各一組陽性，因屬不同菌種未達成 Major 條件，僅計為 1 個 Minor。加上瓣膜置換史 (Minor 1) 與發燒 (Minor 2)，總計 3 個 Minor，符合 Possible IE 的鑑定標準。",
   },
   {
     id: 8,
